@@ -78,7 +78,7 @@ func (p *Prison) IsIsolated(ip string) bool {
 	return p.isolationEligibility(p.imprison(ip)).Isolated
 }
 
-func (p *Prison) Torture(ip string, cb func(args ...any) error) error {
+func (p *Prison) Torture(ip string, cb func(args ...interface{}) error) error {
 	if p.IsIsolated(ip) {
 		return cb()
 	}

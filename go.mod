@@ -1,3 +1,3 @@
 module github.com/syniol/prison-break
 
-go 1.21
+go 1.18
