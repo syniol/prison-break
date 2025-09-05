@@ -60,7 +60,7 @@ func NewPrison(rules *PrisonRules) *Prison {
 			}(),
 		}
 
-		PrisonBreak(instance)
+		prisonBreak(instance)
 	})
 
 	return instance
