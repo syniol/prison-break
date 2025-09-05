@@ -12,7 +12,7 @@ func PrisonBreak(prison *Prison) {
 
 	for i, v := range prison.cells {
 		// todo: add 30 to config
-		if v.LastInspectionDateTime.Sub(time.Now()) >= time.Second*30 {
+		if v.LastInspectionDateTime.Sub(time.Now()) >= prison.rules.PrisonBreakDuration {
 			delete(prison.cells, i)
 		}
 	}

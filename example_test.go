@@ -26,7 +26,7 @@ func ExampleNewPrison() {
 		return nil
 	}
 
-	err := prisonbreak.NewPrison().Torture("127.0.0.11", tortureChamber)
+	err := prison.Torture("127.0.0.11", tortureChamber)
 	fmt.Println(err)
 
 	// Output:
