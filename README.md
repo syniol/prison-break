@@ -1,5 +1,5 @@
 # Prison Break
-![workflow](https://github.com/syniol/xyo-sdk-go/actions/workflows/pipeline.yml/badge.svg)
+![workflow](https://github.com/syniol/prison-break/actions/workflows/pipeline.yml/badge.svg)
 
 <p align="center">
     <a href="https://xyo.financial" target="blank"><img alt="Go (Golang) Gopher Mascot" width="50%" src="https://github.com/syniol/prison-break/blob/main/docs/mascot.png?raw=true" /></a>
