@@ -1,4 +1,5 @@
-# Prison Break _(IP Spam and DDOS Detection)_
+<h1>Prison Break <sup><small>(Stateless DDOS Detection)</small></sup></h1>
+
 ![workflow](https://github.com/syniol/prison-break/actions/workflows/pipeline.yml/badge.svg)
 
 <p align="center">

@@ -4,7 +4,6 @@ import "time"
 
 // prisonBreak will free the inmates based on criteria defined in configuration
 func prisonBreak(prison *Prison) {
-	// clean up cache token every prison.rules.PrisonBreakDuration + time.Second
 	cachePrisonCellTicker := time.NewTicker(prison.rules.PrisonBreakDuration + time.Millisecond)
 	for _ = range cachePrisonCellTicker.C {
 		for i, v := range prison.cells {

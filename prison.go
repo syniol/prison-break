@@ -37,10 +37,10 @@ var once sync.Once
 var instance *Prison
 
 // NewPrison will create a new instance which accept a configuration called PrisonRules
-// rules are optional by default PrisonRules are:
-// IsolationRedLineStrikeCount:    20,
-// IsolationRedLineDuration: time.Second * 5,
-// PrisonBreakDuration:      time.Second * 10,
+// rules are optional by default PrisonRules. Predefined rules are:
+// IsolationRedLineStrikeCount: 20,
+// IsolationRedLineDuration: time.Millisecond * 5,
+// PrisonBreakDuration: time.Millisecond * 30,
 func NewPrison(rules *PrisonRules) *Prison {
 	once.Do(func() {
 		instance = &Prison{
@@ -52,12 +52,13 @@ func NewPrison(rules *PrisonRules) *Prison {
 
 				return &PrisonRules{
 					IsolationRedLineStrikeCount: 20,
-					IsolationRedLineDuration:    time.Second * 5,
-					PrisonBreakDuration:         time.Second * 10,
+					IsolationRedLineDuration:    time.Millisecond * 5,
+					PrisonBreakDuration:         time.Millisecond * 30,
 				}
 			}(),
 		}
 
+		// It will create a sub processing unit using goroutine to work in a background
 		go prisonBreak(instance)
 	})
 
