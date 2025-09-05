@@ -5,6 +5,14 @@ import (
 	"time"
 )
 
+var once sync.Once
+var instance *Prison
+
+func init() {
+	// todo: create a ticker for every breaking time (30) + 1 seconds to trigger this method
+	PrisonBreak(instance)
+}
+
 type InmateIPAddr string
 
 type PrisonInmate struct {
@@ -18,9 +26,6 @@ type PrisonInmate struct {
 type Prison struct {
 	Cells map[string]*PrisonInmate
 }
-
-var once sync.Once
-var instance *Prison
 
 func NewPrison() *Prison {
 	once.Do(func() {
@@ -63,8 +68,9 @@ func (p *Prison) imprison(ip string) *PrisonInmate {
 	return prospectiveInmate
 }
 
-func (p *Prison) isolation(inmate *PrisonInmate) *PrisonInmate {
-	if inmate.LastInspectionDateTime.Before(time.Now()) && inmate.Count > 10 {
+func (p *Prison) isolationEligibility(inmate *PrisonInmate) *PrisonInmate {
+	// todo: make time.Second*5 && 20 as a config
+	if inmate.LastInspectionDateTime.Sub(time.Now()) <= time.Second*5 && inmate.Count >= 20 {
 		inmate.Isolated = true
 	}
 
@@ -72,7 +78,7 @@ func (p *Prison) isolation(inmate *PrisonInmate) *PrisonInmate {
 }
 
 func (p *Prison) IsIsolated(ip string) bool {
-	return p.isolation(p.imprison(ip)).Isolated
+	return p.isolationEligibility(p.imprison(ip)).Isolated
 }
 
 func (p *Prison) Torture(ip string, cb func(args ...any) error) error {
