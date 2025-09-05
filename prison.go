@@ -29,15 +29,21 @@ type PrisonRules struct {
 var once sync.Once
 var instance *Prison
 
-func NewPrison() *Prison {
+func NewPrison(rules *PrisonRules) *Prison {
 	once.Do(func() {
 		instance = &Prison{
 			cells: make(map[string]*PrisonInmate),
-			rules: &PrisonRules{
-				IsolationRedLineCount:    20,
-				IsolationRedLineDuration: time.Second * 5,
-				PrisonBreakDuration:      time.Second * 10,
-			},
+			rules: func() *PrisonRules {
+				if rules != nil {
+					return rules
+				}
+
+				return &PrisonRules{
+					IsolationRedLineCount:    20,
+					IsolationRedLineDuration: time.Second * 5,
+					PrisonBreakDuration:      time.Second * 10,
+				}
+			}(),
 		}
 
 		PrisonBreak(instance)
@@ -78,7 +84,6 @@ func (p *Prison) imprison(ip string) *PrisonInmate {
 }
 
 func (p *Prison) isolationEligibility(inmate *PrisonInmate) *PrisonInmate {
-	// todo: make time.Second*5 && 20 as a config
 	if inmate.LastInspectionDateTime.Sub(time.Now()) <= p.rules.IsolationRedLineDuration &&
 		inmate.Count >= p.rules.IsolationRedLineCount {
 		inmate.Isolated = true
@@ -91,7 +96,7 @@ func (p *Prison) IsIsolated(ip string) bool {
 	return p.isolationEligibility(p.imprison(ip)).Isolated
 }
 
-func (p *Prison) Torture(ip string, cb func(args ...interface{}) error) error {
+func (p *Prison) Torture(ip string, cb func() error) error {
 	if p.IsIsolated(ip) {
 		return cb()
 	}
