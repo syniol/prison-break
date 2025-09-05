@@ -1,17 +1,9 @@
-package prison_break
+package prisonbreak
 
 import (
 	"sync"
 	"time"
 )
-
-var once sync.Once
-var instance *Prison
-
-func init() {
-	// todo: create a ticker for every breaking time (30) + 1 seconds to trigger this method
-	PrisonBreak(instance)
-}
 
 type InmateIPAddr string
 
@@ -24,21 +16,26 @@ type PrisonInmate struct {
 }
 
 type Prison struct {
-	Cells map[string]*PrisonInmate
+	cells map[string]*PrisonInmate
 }
+
+var once sync.Once
+var instance *Prison
 
 func NewPrison() *Prison {
 	once.Do(func() {
 		instance = &Prison{
-			Cells: make(map[string]*PrisonInmate),
+			cells: make(map[string]*PrisonInmate),
 		}
+
+		PrisonBreak(instance)
 	})
 
 	return instance
 }
 
 func (p *Prison) findInmate(ip string) *PrisonInmate {
-	val, ok := p.Cells[ip]
+	val, ok := p.cells[ip]
 	if ok != true {
 		return nil
 	}
@@ -57,7 +54,7 @@ func (p *Prison) imprison(ip string) *PrisonInmate {
 			LastInspectionDateTime: time.Now(),
 		}
 
-		p.Cells[ip] = newInmate
+		p.cells[ip] = newInmate
 
 		return newInmate
 	}
