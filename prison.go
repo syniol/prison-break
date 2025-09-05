@@ -10,10 +10,8 @@ type InmateIPAddr string
 
 // PrisonInmate is definition of prisoner in each cell defined in Prison
 type PrisonInmate struct {
-	IP                     InmateIPAddr
 	Count                  int
 	Isolated               bool
-	RegistrationDateTime   time.Time
 	LastInspectionDateTime time.Time
 }
 
@@ -21,7 +19,7 @@ type PrisonInmate struct {
 // cells is
 // rules is
 type Prison struct {
-	cells map[string]*PrisonInmate
+	cells map[InmateIPAddr]*PrisonInmate
 	rules *PrisonRules
 }
 
@@ -46,7 +44,7 @@ var instance *Prison
 func NewPrison(rules *PrisonRules) *Prison {
 	once.Do(func() {
 		instance = &Prison{
-			cells: make(map[string]*PrisonInmate),
+			cells: make(map[InmateIPAddr]*PrisonInmate),
 			rules: func() *PrisonRules {
 				if rules != nil {
 					return rules
@@ -67,7 +65,7 @@ func NewPrison(rules *PrisonRules) *Prison {
 }
 
 func (p *Prison) findInmate(ip string) *PrisonInmate {
-	val, ok := p.cells[ip]
+	val, ok := p.cells[InmateIPAddr(ip)]
 	if ok != true {
 		return nil
 	}
@@ -79,14 +77,12 @@ func (p *Prison) imprison(ip string) *PrisonInmate {
 	prospectiveInmate := p.findInmate(ip)
 	if prospectiveInmate == nil {
 		newInmate := &PrisonInmate{
-			IP:                     InmateIPAddr(ip),
 			Count:                  1,
 			Isolated:               false,
-			RegistrationDateTime:   time.Now(),
 			LastInspectionDateTime: time.Now(),
 		}
 
-		p.cells[ip] = newInmate
+		p.cells[InmateIPAddr(ip)] = newInmate
 
 		return newInmate
 	}
