@@ -58,7 +58,7 @@ func NewPrison(rules *PrisonRules) *Prison {
 			}(),
 		}
 
-		prisonBreak(instance)
+		go prisonBreak(instance)
 	})
 
 	return instance
