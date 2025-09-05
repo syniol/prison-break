@@ -16,17 +16,17 @@ type PrisonInmate struct {
 }
 
 // Prison is a core domain that contains cells where key is an IP address with inmates information attached and rules
-// cells is
-// rules is
+// cells is in-memory storage using map data structure with an IP Address of inmate as a key and inmates data as a value
+// rules is PrisonRules that defines the behaviour of imprisonment and prison break
 type Prison struct {
 	cells map[InmateIPAddr]*PrisonInmate
 	rules *PrisonRules
 }
 
 // PrisonRules defines the set of rules to be utilised for: isolation eligibility and prison cells clean up
-// IsolationRedLineStrikeCount is
-// IsolationRedLineDuration is
-// PrisonBreakDuration is
+// IsolationRedLineStrikeCount is the maximum number of strikes to reach for an isolation (Solidarity Containment)
+// IsolationRedLineDuration is the maximum duration used for an isolation (Solidarity Containment)
+// PrisonBreakDuration is the minimum duration for breaking prison for a well-behaved inmates
 type PrisonRules struct {
 	IsolationRedLineStrikeCount int
 	IsolationRedLineDuration    time.Duration
