@@ -1,6 +1,7 @@
 package prisonbreak_test
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 
@@ -8,7 +9,7 @@ import (
 )
 
 func ExampleNewPrison() {
-	prison := prisonbreak.NewPrison(nil)
+	prison := prisonbreak.NewPrison(context.TODO(), nil)
 
 	// Checking initial status without count increment to be false
 	// This will determine Isolation (Solidarity Confinement) status of inmate

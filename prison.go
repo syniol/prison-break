@@ -1,6 +1,7 @@
 package prisonbreak
 
 import (
+	"context"
 	"sync"
 	"time"
 )
@@ -46,7 +47,7 @@ const defaultPrisonBreakDuration time.Duration = time.Millisecond * 30
 // IsolationRedLineStrikeCount: 20,
 // IsolationRedLineDuration: time.Millisecond * 5,
 // PrisonBreakDuration: time.Millisecond * 30,
-func NewPrison(rules *PrisonRules) *Prison {
+func NewPrison(ctx context.Context, rules *PrisonRules) *Prison {
 	once.Do(func() {
 		instance = &Prison{
 			cells: make(map[InmateIPAddr]*PrisonInmate),
@@ -64,7 +65,7 @@ func NewPrison(rules *PrisonRules) *Prison {
 		}
 
 		// It will create a sub processing unit using goroutine to work in a background
-		go prisonBreak(instance)
+		prisonBreak(ctx, instance)
 	})
 
 	return instance
