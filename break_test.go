@@ -6,12 +6,12 @@ import (
 )
 
 func TestNewPrison(t *testing.T) {
-	t.Run("NewPrison without sleep", func(t *testing.T) {
+	t.Run("when duration between UpdatedDateTime and PrisonBreakDuration is less", func(t *testing.T) {
 		prison := &Prison{
 			cells: make(map[InmateIPAddr]*PrisonInmate),
 			rules: func() *PrisonRules {
 				return &PrisonRules{
-					IsolationRedLineStrikeCount: 20,
+					IsolationRedLineStrikeCount: defaultIsolationRedLineStrikeCount,
 					IsolationRedLineDuration:    defaultIsolationRedLineDuration,
 					PrisonBreakDuration:         defaultPrisonBreakDuration,
 				}
@@ -35,12 +35,12 @@ func TestNewPrison(t *testing.T) {
 		}
 	})
 
-	t.Run("NewPrison with sleep", func(t *testing.T) {
+	t.Run("when duration between UpdatedDateTime and PrisonBreakDuration is higher", func(t *testing.T) {
 		prison := &Prison{
 			cells: make(map[InmateIPAddr]*PrisonInmate),
 			rules: func() *PrisonRules {
 				return &PrisonRules{
-					IsolationRedLineStrikeCount: 20,
+					IsolationRedLineStrikeCount: defaultIsolationRedLineStrikeCount,
 					IsolationRedLineDuration:    defaultIsolationRedLineDuration,
 					PrisonBreakDuration:         defaultPrisonBreakDuration,
 				}
