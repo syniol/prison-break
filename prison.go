@@ -13,6 +13,7 @@ type PrisonInmate struct {
 	StrikeCount            int
 	Isolated               bool
 	LastInspectionDateTime time.Time
+	LastUpdatedDateTime    time.Time
 }
 
 // Prison is a core domain that contains cells where key is an IP address with inmates information attached and rules
@@ -93,16 +94,17 @@ func (p *Prison) imprison(ip string) *PrisonInmate {
 	}
 
 	prospectiveInmate.StrikeCount = prospectiveInmate.StrikeCount + 1
+	prospectiveInmate.LastUpdatedDateTime = prospectiveInmate.LastInspectionDateTime
 	prospectiveInmate.LastInspectionDateTime = time.Now()
 
 	return prospectiveInmate
 }
 
 func (p *Prison) isolationEligibility(inmate *PrisonInmate) *PrisonInmate {
-	if inmate.StrikeCount > p.rules.IsolationRedLineStrikeCount {
-		//if inmate.LastInspectionDateTime.Sub(time.Now()) <= p.rules.IsolationRedLineDuration {}
-
+	if inmate.StrikeCount > p.rules.IsolationRedLineStrikeCount &&
+		time.Now().Sub(inmate.LastUpdatedDateTime) <= p.rules.IsolationRedLineDuration {
 		inmate.Isolated = true
+
 	}
 
 	return inmate
