@@ -23,6 +23,7 @@ type PrisonInmate struct {
 type Prison struct {
 	cells map[InmateIPAddr]*PrisonInmate
 	rules *PrisonRules
+	mu    sync.Mutex
 }
 
 // PrisonRules defines the set of rules to be utilised for: isolation eligibility and prison cells clean up
@@ -63,15 +64,17 @@ func NewPrison(ctx context.Context, rules *PrisonRules) *Prison {
 				}
 			}(),
 		}
-	})
 
-	// It will create a sub processing unit using goroutine to work in a background
-	prisonBreak(ctx, instance)
+		// It will create a sub processing unit using goroutine to work in a background
+		prisonBreak(ctx, instance)
+	})
 
 	return instance
 }
 
 func (p *Prison) findInmate(ip string) *PrisonInmate {
+	p.mu.Lock()
+	defer p.mu.Unlock()
 	val, ok := p.cells[InmateIPAddr(ip)]
 	if ok != true {
 		return nil
@@ -89,7 +92,9 @@ func (p *Prison) imprison(ip string) *PrisonInmate {
 			LastInspectionDateTime: time.Now(),
 		}
 
+		p.mu.Lock()
 		p.cells[InmateIPAddr(ip)] = newInmate
+		p.mu.Unlock()
 
 		return newInmate
 	}
