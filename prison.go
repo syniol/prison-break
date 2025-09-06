@@ -106,6 +106,14 @@ func (p *Prison) imprison(ip string) *PrisonInmate {
 	return prospectiveInmate
 }
 
+func (p *Prison) freeInmate(ip InmateIPAddr, inmate *PrisonInmate) {
+	if time.Now().Sub(inmate.LastInspectionDateTime) >= p.rules.PrisonBreakDuration {
+		p.mu.Lock()
+		delete(p.cells, ip)
+		p.mu.Unlock()
+	}
+}
+
 func (p *Prison) isolationEligibility(inmate *PrisonInmate) *PrisonInmate {
 	if inmate.StrikeCount > p.rules.IsolationRedLineStrikeCount &&
 		time.Now().Sub(inmate.LastUpdatedDateTime) <= p.rules.IsolationRedLineDuration {
