@@ -64,17 +64,15 @@ func NewPrison(ctx context.Context, rules *PrisonRules) *Prison {
 				}
 			}(),
 		}
-
-		// It will create a sub processing unit using goroutine to work in a background
-		prisonBreak(ctx, instance)
 	})
+
+	// It will create a sub processing unit using goroutine to work in a background
+	prisonBreak(ctx, instance)
 
 	return instance
 }
 
 func (p *Prison) findInmate(ip string) *PrisonInmate {
-	p.mu.RLock()
-	defer p.mu.RUnlock()
 	val, ok := p.cells[InmateIPAddr(ip)]
 	if ok != true {
 		return nil
@@ -92,25 +90,23 @@ func (p *Prison) imprison(ip string) *PrisonInmate {
 			LastInspectionDateTime: time.Now(),
 		}
 
-		p.mu.Lock()
 		p.cells[InmateIPAddr(ip)] = newInmate
-		p.mu.Unlock()
 
 		return newInmate
 	}
 
+	p.mu.Lock()
 	prospectiveInmate.StrikeCount = prospectiveInmate.StrikeCount + 1
 	prospectiveInmate.LastUpdatedDateTime = prospectiveInmate.LastInspectionDateTime
 	prospectiveInmate.LastInspectionDateTime = time.Now()
+	p.mu.Unlock()
 
 	return prospectiveInmate
 }
 
 func (p *Prison) freeInmate(ip InmateIPAddr, inmate *PrisonInmate) {
 	if time.Now().Sub(inmate.LastInspectionDateTime) >= p.rules.PrisonBreakDuration {
-		p.mu.Lock()
 		delete(p.cells, ip)
-		p.mu.Unlock()
 	}
 }
 
