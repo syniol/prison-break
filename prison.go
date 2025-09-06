@@ -63,10 +63,10 @@ func NewPrison(ctx context.Context, rules *PrisonRules) *Prison {
 				}
 			}(),
 		}
-
-		// It will create a sub processing unit using goroutine to work in a background
-		prisonBreak(ctx, instance)
 	})
+
+	// It will create a sub processing unit using goroutine to work in a background
+	prisonBreak(ctx, instance)
 
 	return instance
 }
