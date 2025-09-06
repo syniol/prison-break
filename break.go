@@ -14,7 +14,7 @@ func prisonBreak(ctx context.Context, prison *Prison) {
 		default:
 			cachePrisonCellTicker := time.NewTicker(prison.rules.PrisonBreakDuration + time.Millisecond)
 			for range cachePrisonCellTicker.C {
-				prison.mu.Lock()
+				prison.mu.RLock()
 				for i, v := range prison.cells {
 					prison.mu.Lock()
 					if time.Now().Sub(v.LastInspectionDateTime) >= prison.rules.PrisonBreakDuration {
@@ -22,7 +22,7 @@ func prisonBreak(ctx context.Context, prison *Prison) {
 					}
 					prison.mu.Unlock()
 				}
-				prison.mu.Unlock()
+				prison.mu.RUnlock()
 			}
 		}
 	}(ctx, prison)
