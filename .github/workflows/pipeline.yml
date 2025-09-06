@@ -1,4 +1,4 @@
-name: Run Tests
+name: Code Standards, Unit Tests, Race Trace Detection
 
 on:
   push:
