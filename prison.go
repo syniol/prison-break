@@ -56,7 +56,7 @@ func NewPrison(rules *PrisonRules) *Prison {
 				}
 
 				return &PrisonRules{
-					IsolationRedLineStrikeCount: 20,
+					IsolationRedLineStrikeCount: defaultIsolationRedLineStrikeCount,
 					IsolationRedLineDuration:    defaultIsolationRedLineDuration,
 					PrisonBreakDuration:         defaultPrisonBreakDuration,
 				}
