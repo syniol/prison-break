@@ -3,8 +3,7 @@ name: Code Standards, Unit Tests, Race Trace Detection
 on:
   push:
     branches: [ "main" ]
-    tags:
-      - '*'
+
   pull_request:
     branches: [ "main" ]
 
@@ -12,9 +11,8 @@ jobs:
   test:
     strategy:
       matrix:
-        # It errors for these version for race cond 1.21.x, 1.22.x, 1.23.x, 1.24.x, 1.25.x
-#        go-version: [1.18.x, 1.19.x, 1.20.x, 1.21.x]
-        go-version: [1.18.x, 1.21.x]
+        # For Dev pipeline test on minimum and maximum version supported by package
+        go-version: [1.18.x, 1.25.0]
         os: [ubuntu-latest]
     defaults:
       run:

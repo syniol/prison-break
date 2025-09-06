@@ -1,6 +1,6 @@
 <h1>Prison Break <sup><small>(Stateless DDOS Detection)</small></sup></h1>
 
-![workflow](https://github.com/syniol/prison-break/actions/workflows/pipeline.yml/badge.svg)
+![workflow](https://github.com/syniol/prison-break/actions/workflows/pipeline.yml/badge.svg)    ![workflow](https://github.com/syniol/prison-break/actions/workflows/release.yml/badge.svg)
 
 <p align="center">
     <a href="https://xyo.financial" target="blank"><img alt="Go (Golang) Gopher Mascot" width="40%" src="https://github.com/syniol/prison-break/blob/main/docs/mascot.png?raw=true" /></a>
