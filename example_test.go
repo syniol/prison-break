@@ -27,7 +27,6 @@ func ExampleNewPrison() {
 
 	err := prison.Torture("127.0.0.11", tortureChamber)
 	fmt.Println(err)
-	ctx.Done()
 
 	// Output:
 	// false
