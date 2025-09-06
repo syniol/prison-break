@@ -23,7 +23,7 @@ type PrisonInmate struct {
 type Prison struct {
 	cells map[InmateIPAddr]*PrisonInmate
 	rules *PrisonRules
-	mu    sync.Mutex
+	mu    sync.RWMutex
 }
 
 // PrisonRules defines the set of rules to be utilised for: isolation eligibility and prison cells clean up
@@ -73,8 +73,8 @@ func NewPrison(ctx context.Context, rules *PrisonRules) *Prison {
 }
 
 func (p *Prison) findInmate(ip string) *PrisonInmate {
-	p.mu.Lock()
-	defer p.mu.Unlock()
+	p.mu.RLock()
+	defer p.mu.RUnlock()
 	val, ok := p.cells[InmateIPAddr(ip)]
 	if ok != true {
 		return nil
