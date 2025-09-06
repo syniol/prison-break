@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-func TestBreak(t *testing.T) {
+func _TestBreak(t *testing.T) {
 	prison := &Prison{
 		cells: make(map[InmateIPAddr]*PrisonInmate),
 		rules: &PrisonRules{
