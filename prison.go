@@ -13,6 +13,7 @@ type PrisonInmate struct {
 	StrikeCount            int
 	Isolated               bool
 	LastInspectionDateTime time.Time
+	LastUpdatedDateTime    time.Time
 }
 
 // Prison is a core domain that contains cells where key is an IP address with inmates information attached and rules
@@ -36,6 +37,10 @@ type PrisonRules struct {
 var once sync.Once
 var instance *Prison
 
+const defaultIsolationRedLineStrikeCount = 20
+const defaultIsolationRedLineDuration time.Duration = time.Millisecond * 5
+const defaultPrisonBreakDuration time.Duration = time.Millisecond * 30
+
 // NewPrison will create a new instance which accept a configuration called PrisonRules
 // rules are optional by default PrisonRules. Predefined rules are:
 // IsolationRedLineStrikeCount: 20,
@@ -52,8 +57,8 @@ func NewPrison(rules *PrisonRules) *Prison {
 
 				return &PrisonRules{
 					IsolationRedLineStrikeCount: 20,
-					IsolationRedLineDuration:    time.Millisecond * 5,
-					PrisonBreakDuration:         time.Millisecond * 30,
+					IsolationRedLineDuration:    defaultIsolationRedLineDuration,
+					PrisonBreakDuration:         defaultPrisonBreakDuration,
 				}
 			}(),
 		}
@@ -89,15 +94,17 @@ func (p *Prison) imprison(ip string) *PrisonInmate {
 	}
 
 	prospectiveInmate.StrikeCount = prospectiveInmate.StrikeCount + 1
+	prospectiveInmate.LastUpdatedDateTime = prospectiveInmate.LastInspectionDateTime
 	prospectiveInmate.LastInspectionDateTime = time.Now()
 
 	return prospectiveInmate
 }
 
 func (p *Prison) isolationEligibility(inmate *PrisonInmate) *PrisonInmate {
-	if inmate.LastInspectionDateTime.Sub(time.Now()) <= p.rules.IsolationRedLineDuration &&
-		inmate.StrikeCount >= p.rules.IsolationRedLineStrikeCount {
+	if inmate.StrikeCount > p.rules.IsolationRedLineStrikeCount &&
+		time.Now().Sub(inmate.LastUpdatedDateTime) <= p.rules.IsolationRedLineDuration {
 		inmate.Isolated = true
+
 	}
 
 	return inmate
