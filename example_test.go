@@ -9,7 +9,8 @@ import (
 )
 
 func ExampleNewPrison() {
-	prison := prisonbreak.NewPrison(context.TODO(), nil)
+	ctx := context.Background()
+	prison := prisonbreak.NewPrison(ctx, nil)
 
 	// Checking initial status without count increment to be false
 	// This will determine Isolation (Solidarity Confinement) status of inmate
@@ -26,6 +27,7 @@ func ExampleNewPrison() {
 
 	err := prison.Torture("127.0.0.11", tortureChamber)
 	fmt.Println(err)
+	ctx.Done()
 
 	// Output:
 	// false
