@@ -7,7 +7,7 @@ func prisonBreak(prison *Prison) {
 	cachePrisonCellTicker := time.NewTicker(prison.rules.PrisonBreakDuration + time.Millisecond)
 	for _ = range cachePrisonCellTicker.C {
 		for i, v := range prison.cells {
-			if v.LastInspectionDateTime.Sub(time.Now()) >= prison.rules.PrisonBreakDuration {
+			if time.Now().Sub(v.LastInspectionDateTime) >= prison.rules.PrisonBreakDuration {
 				delete(prison.cells, i)
 			}
 		}
