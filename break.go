@@ -7,15 +7,12 @@ import (
 
 // prisonBreak will free the inmates based on criteria defined in configuration
 func prisonBreak(ctx context.Context, prison *Prison) {
-	cachePrisonCellTicker := time.NewTicker(prison.rules.PrisonBreakDuration + time.Millisecond)
-
-	go func(ctx context.Context, prison *Prison, cachePrisonCellTicker *time.Ticker) {
+	go func(ctx context.Context, prison *Prison) {
 		select {
 		case <-ctx.Done():
-			prison.cells = make(map[InmateIPAddr]*PrisonInmate)
-			cachePrisonCellTicker.Stop()
 			return
 		default:
+			cachePrisonCellTicker := time.NewTicker(prison.rules.PrisonBreakDuration + time.Millisecond)
 			for range cachePrisonCellTicker.C {
 				prison.mu.Lock()
 				for i, v := range prison.cells {
@@ -28,5 +25,5 @@ func prisonBreak(ctx context.Context, prison *Prison) {
 				prison.mu.Unlock()
 			}
 		}
-	}(ctx, prison, cachePrisonCellTicker)
+	}(ctx, prison)
 }
