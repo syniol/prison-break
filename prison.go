@@ -139,6 +139,7 @@ func (p *Prison) flushPrison() {
 	p.mu.Lock()
 	p.cells = make(map[InmateIPAddr]*PrisonInmate)
 	p.inmateCount = 0
+	p.mu.Unlock()
 }
 
 // IsIsolated examines the criteria against PrisonRules.
