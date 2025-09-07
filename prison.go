@@ -46,9 +46,9 @@ const defaultPrisonBreakDuration time.Duration = time.Millisecond * 30
 
 // NewPrison will create a new instance which accept a configuration called PrisonRules
 // rules are optional by default PrisonRules. Predefined rules are:
-// IsolationRedLineStrikeCount: 20,
-// IsolationRedLineDuration: time.Millisecond * 5,
-// PrisonBreakDuration: time.Millisecond * 30,
+// IsolationRedLineStrikeCount: 20.
+// IsolationRedLineDuration: time.Millisecond * 5.
+// PrisonBreakDuration: time.Millisecond * 30.
 func NewPrison(ctx context.Context, rules *PrisonRules) *Prison {
 	once.Do(func() {
 		instance = &Prison{
