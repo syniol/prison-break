@@ -124,6 +124,13 @@ func (p *Prison) isolationEligibility(inmate *PrisonInmate) *PrisonInmate {
 	return inmate
 }
 
+func (p *Prison) occupiedCellsCount() int {
+	p.mu.RLock()
+	defer p.mu.RUnlock()
+
+	return p.inmateCount
+}
+
 // flushPrison will be used in the next version of this library.
 // There will be a goroutine monitoring count of inmates and if it reaches a redline (Threshold)
 // it will flush the memory for cells and inmate count, and starts over.
