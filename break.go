@@ -29,11 +29,11 @@ func prisonBreak(ctx context.Context, prison *Prison) {
 		default:
 			cachePrisonCellTicker := time.NewTicker(prison.rules.PrisonBreakDuration + time.Millisecond)
 			for range cachePrisonCellTicker.C {
-				prison.mu.Lock()
+				//prison.mu.Lock()
 				for inmateIP, inmate := range prison.cells {
 					prison.freeInmate(inmateIP, inmate)
 				}
-				prison.mu.Unlock()
+				//prison.mu.Unlock()
 			}
 		}
 	}(ctx, prison)

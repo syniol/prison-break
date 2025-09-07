@@ -82,6 +82,7 @@ func (p *Prison) findInmate(ip string) *PrisonInmate {
 }
 
 func (p *Prison) imprison(ip string) *PrisonInmate {
+	p.mu.Lock()
 	prospectiveInmate := p.findInmate(ip)
 	if prospectiveInmate == nil {
 		newInmate := &PrisonInmate{
@@ -91,11 +92,11 @@ func (p *Prison) imprison(ip string) *PrisonInmate {
 		}
 
 		p.cells[InmateIPAddr(ip)] = newInmate
+		p.mu.Unlock()
 
 		return newInmate
 	}
 
-	p.mu.Lock()
 	prospectiveInmate.StrikeCount = prospectiveInmate.StrikeCount + 1
 	prospectiveInmate.LastUpdatedDateTime = prospectiveInmate.LastInspectionDateTime
 	prospectiveInmate.LastInspectionDateTime = time.Now()
@@ -114,7 +115,6 @@ func (p *Prison) isolationEligibility(inmate *PrisonInmate) *PrisonInmate {
 	if inmate.StrikeCount > p.rules.IsolationRedLineStrikeCount &&
 		time.Now().Sub(inmate.LastUpdatedDateTime) <= p.rules.IsolationRedLineDuration {
 		inmate.Isolated = true
-
 	}
 
 	return inmate
