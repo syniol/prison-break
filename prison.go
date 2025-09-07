@@ -120,6 +120,10 @@ func (p *Prison) isolationEligibility(inmate *PrisonInmate) *PrisonInmate {
 	return inmate
 }
 
+func (p *Prison) inmateCount() int {
+	return len(p.cells)
+}
+
 // IsIsolated examines the criteria against PrisonRules
 // It determines the eligibility of Solidarity Confinement
 func (p *Prison) IsIsolated(ip string) bool {
