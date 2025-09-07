@@ -21,9 +21,10 @@ type PrisonInmate struct {
 // cells is in-memory storage using map data structure with an IP Address of inmate as a key and inmates data as a value
 // rules is PrisonRules that defines the behaviour of imprisonment and prison break
 type Prison struct {
-	cells map[InmateIPAddr]*PrisonInmate
-	rules *PrisonRules
-	mu    sync.RWMutex
+	cells       map[InmateIPAddr]*PrisonInmate
+	inmateCount int
+	rules       *PrisonRules
+	mu          sync.RWMutex
 }
 
 // PrisonRules defines the set of rules to be utilised for: isolation eligibility and prison cells clean up
@@ -51,7 +52,8 @@ const defaultPrisonBreakDuration time.Duration = time.Millisecond * 30
 func NewPrison(ctx context.Context, rules *PrisonRules) *Prison {
 	once.Do(func() {
 		instance = &Prison{
-			cells: make(map[InmateIPAddr]*PrisonInmate),
+			cells:       make(map[InmateIPAddr]*PrisonInmate),
+			inmateCount: 0,
 			rules: func() *PrisonRules {
 				if rules != nil {
 					return rules
@@ -92,6 +94,7 @@ func (p *Prison) imprison(ip string) *PrisonInmate {
 		}
 
 		p.cells[InmateIPAddr(ip)] = newInmate
+		p.inmateCount++
 		p.mu.Unlock()
 
 		return newInmate
@@ -108,6 +111,7 @@ func (p *Prison) imprison(ip string) *PrisonInmate {
 func (p *Prison) freeInmate(ip InmateIPAddr, inmate *PrisonInmate) {
 	if time.Now().Sub(inmate.LastInspectionDateTime) >= p.rules.PrisonBreakDuration {
 		delete(p.cells, ip)
+		p.inmateCount--
 	}
 }
 
@@ -120,12 +124,18 @@ func (p *Prison) isolationEligibility(inmate *PrisonInmate) *PrisonInmate {
 	return inmate
 }
 
-func (p *Prison) inmateCount() int {
-	return len(p.cells)
+// flushPrison will be used in the next version of this library.
+// There will be a goroutine monitoring count of inmates and if it reaches a redline (Threshold)
+// it will flush the memory for cells and inmate count, and starts over.
+// This will prevent (Reverse-Reverse DDOS) attack where memory overload is the goal.
+func (p *Prison) flushPrison() {
+	p.mu.Lock()
+	p.cells = make(map[InmateIPAddr]*PrisonInmate)
+	p.inmateCount = 0
 }
 
-// IsIsolated examines the criteria against PrisonRules
-// It determines the eligibility of Solidarity Confinement
+// IsIsolated examines the criteria against PrisonRules.
+// It determines the eligibility of Solidarity Confinement.
 func (p *Prison) IsIsolated(ip string) bool {
 	return p.isolationEligibility(p.imprison(ip)).Isolated
 }
